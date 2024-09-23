@@ -16,6 +16,7 @@ class LocalEmbedding:
     def set(setting: RAGSettings | None = None, **kwargs):
         setting = setting or RAGSettings()
         model_name = setting.ingestion.embed_llm
+        print(f"Embedding model: {model_name}")
         if model_name != "text-embedding-ada-002":
             return HuggingFaceEmbedding(
                 model=AutoModel.from_pretrained(

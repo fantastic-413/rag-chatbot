@@ -53,6 +53,14 @@ class LocalDataIngestion:
                 return_nodes.extend(self._node_store[file_name])
             else:
                 document = fitz.open(input_file)
+                # from llama_parse import LlamaParse
+                # # 创建解析器并解析 PDF文档
+                # parser = LlamaParse(
+                #     api_key="llx-H0ZsTXv94pDB1PosMuGfaBvIuNWQ9jFVwzmIzQMWp7gF9sHO",  # 也可以在环境中设置为 LLAMA_CLOUD_API_KEY
+                #     result_type="markdown"  # "markdown" and "text" are available
+                # )
+
+                # document = parser.load_data(input_file)
                 all_text = ""
                 for doc_idx, page in enumerate(document):
                     page_text = page.get_text("text")

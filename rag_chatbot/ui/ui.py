@@ -119,7 +119,7 @@ class LocalChatbotUI:
             sys.stdout = console
 
     def _get_confirm_pull_model(self, model: str):
-        if (model in ["gpt-3.5-turbo", "gpt-4"]) or (self._pipeline.check_exist(model)):
+        if (model in ["gpt-3.5-turbo", "gpt-4", "claude-3.5"]) or (self._pipeline.check_exist(model)):
             self._change_model(model)
             return (
                 gr.update(visible=False),
@@ -133,7 +133,7 @@ class LocalChatbotUI:
         )
 
     def _pull_model(self, model: str, progress=gr.Progress(track_tqdm=True)):
-        if (model not in ["gpt-3.5-turbo", "gpt-4"]) and not (
+        if (model not in ["gpt-3.5-turbo", "gpt-4", "claude-3.5"]) and not (
             self._pipeline.check_exist(model)
         ):
             response = self._pipeline.pull_model(model)
@@ -201,11 +201,17 @@ class LocalChatbotUI:
     def _processing_document(
         self, document: list[str], progress=gr.Progress(track_tqdm=True)
     ):
+        print(self._data_dir)
+        if not os.path.exists(self._data_dir):
+            os.makedirs(self._data_dir)
+
         document = document or []
         if self._host == "host.docker.internal":
             input_files = []
             for file_path in document:
+                print(file_path)
                 dest = os.path.join(self._data_dir, file_path.split("/")[-1])
+                print(dest)
                 shutil.move(src=file_path, dst=dest)
                 input_files.append(dest)
             self._pipeline.store_nodes(input_files=input_files)
@@ -292,6 +298,8 @@ class LocalChatbotUI:
                                     "mixtral:instruct",
                                     "nous-hermes2:10.7b-solar-q4_K_M",
                                     "codeqwen:7b-chat-v1.5-q5_1",
+                                    "claude-3.5",
+                                    "gpt-3.5-turbo"
                                 ],
                                 value=None,
                                 interactive=True,
